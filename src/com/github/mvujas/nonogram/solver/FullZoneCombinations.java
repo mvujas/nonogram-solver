@@ -28,7 +28,7 @@ public class FullZoneCombinations {
 	public int count() {
 		return combinations.size();
 	}
-	
+
 	/**
 	 * @return If all combinations have same tile state at position n
 	 * 		returns the state, otherwise returns null

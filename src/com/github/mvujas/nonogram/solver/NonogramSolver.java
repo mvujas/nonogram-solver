@@ -13,7 +13,6 @@ public class NonogramSolver {
 	private NonogramState nonogramState;
 	private List<FullZoneCombinations> horizontalCombinations;
 	private List<FullZoneCombinations> verticalCombinations;
-	private PriorityQueue<FullZoneCombinations> leastCombinationsQueue;
 	
 	private NonogramSolver(NonogramState nonogramState) {
 		super();
@@ -100,32 +99,49 @@ public class NonogramSolver {
 				value, x);
 	}
 	
-	public void setUsingCombinations(FullZoneCombinations combinations, int lineSize) {
-		// TODO: uneti proveru da li su kombinacije vertikalne ili horizontalne
+	private boolean isSolved() {
+		boolean solved = true;
+		for(int y = 0; y < nonogramState.getHeight() && solved; y++) {
+			for(int x = 0; x < nonogramState.getWidth() && solved; x++) {
+				solved &= (nonogramState.getTile(x, y) != null);
+			}
+		}
+		return solved;
 	}
 	
 	public void findMissing() {
 		verticalCombinations = generateListOfCombinations(
-				nonogramState.getVerticalNums(), nonogramState.getWidth());
+				nonogramState.getVerticalNums(), 
+				nonogramState.getWidth());
 		horizontalCombinations = generateListOfCombinations(
-				nonogramState.getHorizontalNums(), nonogramState.getHeight());
-	
-		// it doesn't matter that count change while objects are in
-		// the priority queue because it can only get smaller, it will
-		// still presumably provide time benefits
-		leastCombinationsQueue = new PriorityQueue<>(
-				(a, b) -> a.count() - b.count());
+				nonogramState.getHorizontalNums(), 
+				nonogramState.getHeight());
 		
-		verticalCombinations.stream().forEach(leastCombinationsQueue::add);
-		horizontalCombinations.stream().forEach(leastCombinationsQueue::add);
-		
-		System.out.println("Horizontal: ");
-		for(FullZoneCombinations combination: horizontalCombinations) {
-			System.out.println(combination);
-		}
-		System.out.println("Vertical: ");
-		for(FullZoneCombinations combination: verticalCombinations) {
-			System.out.println(combination);
+		// TODO: refactor, try to speed up
+		while(!isSolved()) {
+			for(int x = 0; x < nonogramState.getWidth(); x++) {
+				FullZoneCombinations combinations = verticalCombinations.get(x);
+				for(int y = 0; y < nonogramState.getHeight(); y++) {
+					if(nonogramState.getTile(x, y) == null) {
+						TileState tile = combinations.unambiguousStateAtPosition(y);
+						if(tile != null) {
+							set(x, y, tile);
+						}
+					}
+				}
+			}
+			
+			for(int y = 0; y < nonogramState.getHeight(); y++) {
+				FullZoneCombinations combinations = horizontalCombinations.get(y);
+				for(int x = 0; x < nonogramState.getWidth(); x++) {
+					if(nonogramState.getTile(x, y) == null) {
+						TileState tile = combinations.unambiguousStateAtPosition(x);
+						if(tile != null) {
+							set(x, y, tile);
+						}
+					}
+				}
+			}
 		}
 	}
 	
