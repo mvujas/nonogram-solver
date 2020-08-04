@@ -44,7 +44,8 @@ public class FullZoneCombinations {
 					combination.tileAtPos(n);
 			if(tileState == null) {
 				tileState = combinationTileState;
-			} else if(tileState != combinationTileState) {
+			} 
+			else if(tileState != combinationTileState) {
 				isUnambiguous = false;
 			}
 		}
@@ -56,6 +57,11 @@ public class FullZoneCombinations {
 		combinations = combinations.stream()
 				.filter(a -> a.tileAtPos(n) == state)
 				.collect(Collectors.toList());
+	}
+	
+	@Override
+	public String toString() {
+		return combinations.toString();
 	}
 	
 }

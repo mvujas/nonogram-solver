@@ -41,5 +41,10 @@ public class FullZoneList {
 				TileState.FULL : TileState.EMPTY;
 	}
 	
+	@Override
+	public String toString() {
+		return fullZones.toString();
+	}
+	
 	
 }

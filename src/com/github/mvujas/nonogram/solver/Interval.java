@@ -40,5 +40,10 @@ public class Interval {
 		return n > end;
 	}
 	
+	@Override
+	public String toString() {
+		return String.format("(%d, %d)", start, end);
+	}
+	
 	
 }
