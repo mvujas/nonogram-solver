@@ -1,4 +1,4 @@
-package com.github.mvujas.nonogramsolver;
+package com.github.mvujas.nonogram;
 
 import java.util.List;
 
@@ -36,13 +36,27 @@ public class NonogramState {
 		return width;
 	}
 	
+	public TileState[][] getBoard() {
+		return board;
+	}
+
+	public List<List<Integer>> getVerticalNums() {
+		return verticalNums;
+	}
+
+	public List<List<Integer>> getHorizontalNums() {
+		return horizontalNums;
+	}
+
 	private void checkCoordinateValidity(int x, int y) 
 			throws IllegalArgumentException  {
 		if(x < 0 || x >= width) {
-			throw new IllegalArgumentException("X coordinate out of bounds");
+			throw new IllegalArgumentException(
+					"X coordinate out of bounds");
 		}
 		if(y < 0 || y >= height) {
-			throw new IllegalArgumentException("Y coordinate out of bounds");
+			throw new IllegalArgumentException(
+					"Y coordinate out of bounds");
 		}
 	}
 	

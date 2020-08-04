@@ -1,4 +1,4 @@
-package com.github.mvujas.nonogramsolver;
+package com.github.mvujas.nonogram;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -1,4 +1,4 @@
-package com.github.mvujas.nonogramsolver;
+package com.github.mvujas.nonogram;
 
 public class Main {
 	public static void main(String[] args) {
