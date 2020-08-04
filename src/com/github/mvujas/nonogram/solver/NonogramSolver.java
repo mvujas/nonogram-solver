@@ -146,9 +146,6 @@ public class NonogramSolver {
 	}
 	
 	
-	
-	
-	
 	public static void solve(NonogramState nonogramState) {
 		new NonogramSolver(nonogramState).findMissing();
 	}
