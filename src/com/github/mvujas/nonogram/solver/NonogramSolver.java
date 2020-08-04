@@ -100,6 +100,10 @@ public class NonogramSolver {
 				value, x);
 	}
 	
+	public void setUsingCombinations(FullZoneCombinations combinations, int lineSize) {
+		// TODO: uneti proveru da li su kombinacije vertikalne ili horizontalne
+	}
+	
 	public void findMissing() {
 		verticalCombinations = generateListOfCombinations(
 				nonogramState.getVerticalNums(), nonogramState.getWidth());
