@@ -2,14 +2,18 @@ package com.github.mvujas.nonogram.solver;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.PriorityQueue;
+import java.util.stream.Collectors;
 
 import com.github.mvujas.nonogram.ListUtils;
 import com.github.mvujas.nonogram.NonogramState;
+import com.github.mvujas.nonogram.TileState;
 
 public class NonogramSolver {
 	private NonogramState nonogramState;
 	private List<FullZoneCombinations> horizontalCombinations;
 	private List<FullZoneCombinations> verticalCombinations;
+	private PriorityQueue<FullZoneCombinations> leastCombinationsQueue;
 	
 	private NonogramSolver(NonogramState nonogramState) {
 		super();
@@ -18,24 +22,6 @@ public class NonogramSolver {
 					"Nonogram state cannot be null");
 		}
 		this.nonogramState = nonogramState;
-	}
-	
-	public void findMissing() {
-		int width = nonogramState.getWidth();
-		for(int x = 0; x < width; x++) {
-			List<Integer> nums = nonogramState
-					.getHorizontalNums().get(x);
-			System.out.println("y = " + x  + ": " 
-					+ generateCombinations(nums, width));
-		}
-		
-		int height = nonogramState.getHeight();
-		for(int y = 0; y < height; y++) {
-			List<Integer> nums = nonogramState
-					.getVerticalNums().get(y);
-			System.out.println("x = " + y  + ": " 
-					+ generateCombinations(nums, height));
-		}
 	}
 	
 	private FullZoneCombinations generateCombinations(
@@ -91,6 +77,51 @@ public class NonogramSolver {
 				// currentNumIndexcan be as the index of the latest added interval
 				currentCombination.remove(currentNumIndex); 
 			}
+		}
+	}
+	
+	private List<FullZoneCombinations> generateListOfCombinations(
+			List<List<Integer>> listOfNums, int lineSize) {
+		return listOfNums.stream()
+				.map(nums -> generateCombinations(nums, lineSize))
+				.collect(Collectors.toList());
+	}
+	
+	private void set(int x, int y, TileState value) {
+		FullZoneCombinations verticalCombination = 
+				verticalCombinations.get(x);
+		FullZoneCombinations horizontalCombination =
+				horizontalCombinations.get(y);
+		
+		nonogramState.setTile(x, y, value);
+		verticalCombination.filterCombinationsWithoutTileStateAtPosition(
+				value, y);
+		horizontalCombination.filterCombinationsWithoutTileStateAtPosition(
+				value, x);
+	}
+	
+	public void findMissing() {
+		verticalCombinations = generateListOfCombinations(
+				nonogramState.getVerticalNums(), nonogramState.getWidth());
+		horizontalCombinations = generateListOfCombinations(
+				nonogramState.getHorizontalNums(), nonogramState.getHeight());
+	
+		// it doesn't matter that count change while objects are in
+		// the priority queue because it can only get smaller, it will
+		// still presumably provide time benefits
+		leastCombinationsQueue = new PriorityQueue<>(
+				(a, b) -> a.count() - b.count());
+		
+		verticalCombinations.stream().forEach(leastCombinationsQueue::add);
+		horizontalCombinations.stream().forEach(leastCombinationsQueue::add);
+		
+		System.out.println("Horizontal: ");
+		for(FullZoneCombinations combination: horizontalCombinations) {
+			System.out.println(combination);
+		}
+		System.out.println("Vertical: ");
+		for(FullZoneCombinations combination: verticalCombinations) {
+			System.out.println(combination);
 		}
 	}
 	

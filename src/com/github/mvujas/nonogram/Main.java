@@ -21,8 +21,8 @@ public class Main {
 		NonogramState state = new NonogramState(
 				5, 5, 
 				verticalNums, horizontalNums);
-		VisualisationUtils.showState(state);
 		
 		NonogramSolver.solve(state);
+		VisualisationUtils.showState(state);
 	}
 }
