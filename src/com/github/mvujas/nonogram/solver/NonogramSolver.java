@@ -117,8 +117,11 @@ public class NonogramSolver {
 				nonogramState.getHorizontalNums(), 
 				nonogramState.getHeight());
 		
+		int iter = 0;
+		
 		// TODO: refactor, try to speed up
-		while(!isSolved()) {
+		while(!isSolved() && iter++ < 100) {
+			//System.out.println("Iteration");
 			for(int x = 0; x < nonogramState.getWidth(); x++) {
 				FullZoneCombinations combinations = verticalCombinations.get(x);
 				for(int y = 0; y < nonogramState.getHeight(); y++) {
