@@ -1,6 +1,6 @@
 # Nonogram solver
 
-A solver for black-white nonogram puzzle. Beside the solver the repository features an automated bot that solves black and white Japanese crosswords on website nonograms.org.
+A solver for black-white nonogram puzzle. Beside the solver the repository features an automated bot that solves black and white Japanese crosswords on website [nonograms.org](https://www.nonograms.org/).
 
 ---
 
