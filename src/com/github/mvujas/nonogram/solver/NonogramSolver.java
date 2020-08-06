@@ -112,16 +112,15 @@ public class NonogramSolver {
 	public void findMissing() {
 		verticalCombinations = generateListOfCombinations(
 				nonogramState.getVerticalNums(), 
-				nonogramState.getWidth());
+				nonogramState.getHeight());
 		horizontalCombinations = generateListOfCombinations(
 				nonogramState.getHorizontalNums(), 
-				nonogramState.getHeight());
+				nonogramState.getWidth());
+
 		
-		int iter = 0;
 		
-		// TODO: refactor, try to speed up
-		while(!isSolved() && iter++ < 100) {
-			//System.out.println("Iteration");
+		int iter = 0; // workaroundd for the time being
+		while(!isSolved() && iter++ < 1000) {
 			for(int x = 0; x < nonogramState.getWidth(); x++) {
 				FullZoneCombinations combinations = verticalCombinations.get(x);
 				for(int y = 0; y < nonogramState.getHeight(); y++) {

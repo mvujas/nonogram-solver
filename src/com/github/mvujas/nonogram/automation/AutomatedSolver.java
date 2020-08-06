@@ -11,6 +11,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 
 import com.github.mvujas.nonogram.NonogramState;
+import com.github.mvujas.nonogram.TileState;
 import com.github.mvujas.nonogram.VisualisationUtils;
 import com.github.mvujas.nonogram.solver.NonogramSolver;
 
@@ -25,7 +26,6 @@ interface SelectorCreator {
 }
 
 public class AutomatedSolver {
-	
 	static List<List<Integer>> getNums(
 			WebDriver driver, SelectorCreator selectorCreator) {
 		List<List<Integer>> listOfNums = new LinkedList<>();
@@ -101,22 +101,69 @@ public class AutomatedSolver {
 		return state;
 	}
 	
+	static WebElement getWebElementByBoxCoordinates(
+			WebDriver driver, int x, int y) {
+		return driver.findElement(By.id(String.format("nmf%d_%d", x, y)));
+	}
+	
+	static void fillBoard(WebDriver driver, NonogramState game) {
+		for(int y = 0; y < game.getHeight(); y++) {
+			for(int x = 0; x < game.getWidth(); x++) {
+				TileState tile = game.getTile(x, y);
+				if(tile == TileState.FULL) {
+					WebElement boxEl = 
+							getWebElementByBoxCoordinates(driver, x, y);
+					boxEl.click();
+				}
+			}
+		}
+	}
+	
+	static WebElement[][] getClickableBoxes(WebDriver driver, NonogramState state) {
+		WebElement[][] boxes = new WebElement[state.getHeight()][state.getWidth()];
+		for(int y = 0; y < state.getHeight(); y++) {
+			for(int x = 0; x < state.getWidth(); x++) {
+				if(state.getTile(x, y) == TileState.FULL) {
+					WebElement boxEl = 
+							getWebElementByBoxCoordinates(driver, x, y);
+					boxes[y][x] = boxEl;
+				}
+			}
+		}
+		return boxes;
+	}
+	
+	static void fillBoardWithWebElements(WebElement[][] elements, NonogramState state) {
+		for(int y = 0; y < state.getHeight(); y++) {
+			for(int x = 0; x < state.getWidth(); x++) {
+				TileState tile = state.getTile(x, y);
+				if(tile == TileState.FULL) {
+					WebElement box = elements[y][x];
+					box.click();
+				}
+			}
+		}
+	}
+	
 	public static void main(String[] args) throws IOException {
 		WebDriver driver = new ChromeDriver();
 		try {
-			driver.get("https://www.nonograms.org/nonograms/i/4353");
+			driver.get("https://www.nonograms.org/nonograms/i/31875");
 			
 			NonogramState gameState = createGame(driver);
 			
 			NonogramSolver.solve(gameState);
 			VisualisationUtils.showState(gameState);
 			
+			//fillBoard(driver, gameState);
 			
+			// Minimizes time on the website compared to the former solution (fillBoard)
+			fillBoardWithWebElements(getClickableBoxes(driver, gameState), gameState);
 			
 			System.out.println("Solving finished! Press any key to quit the browser...");
 			System.in.read();
 		} finally {
-			driver.quit();
+			//	driver.quit();
 		}
 	}
 }
